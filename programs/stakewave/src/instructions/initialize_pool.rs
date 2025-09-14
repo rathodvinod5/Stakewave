@@ -1,8 +1,12 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Token, TokenAccount, Mint};
-use crate::states::*;
+use crate::states::Pool;
 
-pub fn initilize_pool(ctx: Context<InitializePool>, reward_rate: u64) ->  Result<()> {
+/// Initializes a new staking pool
+/// - Creates the `Pool` account (PDA)
+/// - Creates staking and reward vault token accounts (owned by the pool PDA)
+/// - Sets reward rate and initializes counters
+pub fn initialize_pool(ctx: Context<InitializePool>, reward_rate: u64) ->  Result<()> {
     let pool = &mut ctx.accounts.pool;
 
     pool.authority = ctx.accounts.authority.key();
