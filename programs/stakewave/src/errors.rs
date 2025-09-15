@@ -19,4 +19,10 @@ pub enum CustomErrors {
 
     #[msg("Insufficient staked balance to unstake")] 
     InsufficientStake,
+
+    #[msg("No rewards to claim")]
+    NoRewardsToClaim,
+
+    #[msg("Insufficient reward vault balance")]
+    InsufficientRewardVaultBalance
 }

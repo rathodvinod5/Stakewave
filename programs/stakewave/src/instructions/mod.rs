@@ -6,3 +6,6 @@ pub mod stake;
 
 pub use unstake::*;
 pub mod unstake;
+
+pub use claim::*;
+pub mod claim;
