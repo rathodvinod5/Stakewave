@@ -9,3 +9,6 @@ pub mod unstake;
 
 pub use claim::*;
 pub mod claim;
+
+pub use update_rewards::*;
+pub mod update_rewards;

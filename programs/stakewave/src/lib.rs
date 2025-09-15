@@ -15,6 +15,21 @@ pub mod stakewave {
         initialize_pool(ctx, reward_rate);
         Ok(())
     }
+
+    pub fn stake(ctx: Context<Stake>, amount: u64) -> Result<()> {
+        stake(ctx, amount);
+        Ok(())
+    }
+
+    pub fn claim(ctx: Context<Claim>) -> Result<()> {
+        claim(ctx);
+        Ok(())
+    }
+
+    pub fn unstake(ctx: Context<Unstake>) -> Result<()> {
+        unstake(ctx);
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]

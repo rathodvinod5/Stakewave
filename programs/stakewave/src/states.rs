@@ -10,7 +10,7 @@ pub struct Pool {
     pub reward_vault: Pubkey,
     pub reward_rate:u64,
     pub last_update_time: i64,
-    pub acc_reward_per_token: u128,
+    pub acc_reward_per_token: u64,
     pub total_staked: u64,
     pub bump: u8,
 }
