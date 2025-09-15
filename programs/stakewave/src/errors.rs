@@ -15,5 +15,8 @@ pub enum CustomErrors {
     KeysNotEqual,
 
     #[msg("Not have enough token")]
-    NotHaveEnoughTokens
+    NotHaveEnoughTokens,
+
+    #[msg("Insufficient staked balance to unstake")] 
+    InsufficientStake,
 }
