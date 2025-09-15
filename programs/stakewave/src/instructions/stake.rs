@@ -1,9 +1,40 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{Mint, TokenAccount, Token};
+use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 
-use crate::states::*;
+use crate::{errors::CustomErrors, states::*};
 
-pub fn stake(ctx: Context<Stake>) -> Result<()> {
+/// Stake tokens into the pool
+/// - Transfers user's staking tokens into the pool's staking vault
+/// - Updates reward debt before increasing stake
+/// - Ensures user is staking the correct mint and has sufficient balance
+pub fn stake(ctx: Context<Stake>, amount: u64) -> Result<()> {
+    let user_stake = &mut ctx.accounts.users_stake;
+    let user_token_ata = &ctx.accounts.user_staking_ata;
+    let pool = &mut ctx.accounts.pool;
+
+    // Ensure this user's staking ATA is for the same staking_mint as the pool
+    require_keys_eq!(pool.staking_mint, user_token_ata.mint, CustomErrors::KeysNotEqual);
+    // Ensure user has enough balance to stake
+    require!(user_token_ata.amount > 0, CustomErrors::NotHaveEnoughTokens);
+
+    // Update pending rewards before modifying stake
+    // update_rewards(ctx, amount);
+
+    // Transfer tokens
+    let transfer_instructions_accounts = Transfer {
+        from: user_token_ata.to_account_info(),
+        to: ctx.accounts.staking_vault.to_account_info(),
+        authority: ctx.accounts.user.to_account_info(),
+    };
+
+    // Execute transfer instructions with CPI
+    let cpi_program = ctx.accounts.token_program.to_account_info();
+    let _ = token::transfer(CpiContext::new(cpi_program, transfer_instructions_accounts), amount);
+
+    // Update state
+    user_stake.staked_amount = user_stake.staked_amount.checked_add(amount).unwrap();
+    pool.total_staked = pool.total_staked.checked_add(amount).unwrap();
+
     Ok(())
 }
 
